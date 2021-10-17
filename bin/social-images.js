@@ -5,6 +5,7 @@ const chromium = require("chrome-aws-lambda");
 const fs = require("fs");
 const path = require("path");
 const isWsl = require('is-wsl');
+const delay = require('delay');
 
 const defaults = {
   siteName: "11ty Rocks!",
@@ -50,14 +51,14 @@ const previewPath = `${buildRoot}/${imageDir}`;
 const dataPath = fs.realpathSync(dataFile);
 
 (async () => {
-  console.log("Starting social images...");
+  console.log("Starting custom social images...");
 
   const browserArgs = {
       args: chromium.args,
       executablePath: await chromium.executablePath,
       headless: chromium.headless,
     }
-  
+
   // WSL requires a different config
   if(isWsl){
     browserArgs.executablePath = "google-chrome"
@@ -118,10 +119,35 @@ const dataPath = fs.realpathSync(dataFile);
   // Go over all the posts
   for (const post of pages) {
     // Update the H1 element with the post title
+    /*console.log(post.title);
+    console.log(post.cover);
+    console.log(post.bhkSpecs);*/
     await page.evaluate((post) => {
       const title = document.querySelector("h1");
       title.innerHTML = post.title;
+      const main = document.querySelector("main");
+      main.style.backgroundImage = `url(${post.cover})`;
+      const flexgrid = document.querySelector(".flexgrid");
+      flexgrid.innerHTML="";
+      for (feat in post.bhkSpecs) {
+        var feature = document.createElement('div');
+        feature.classList.add("hfeature","nogrow");
+        const s = post.bhkSpecs[feat]
+        console.log();
+        s.unit = s.unit !== undefined ? s.unit : ''
+        s.size = s.size !== undefined ? s.size : ''
+        s.key = s.key !== undefined ? s.key : ''
+        feature.innerHTML = `
+        <div class="circle pro-icon">
+        <img alt="" src="${s.icon}" width="60px" height="60px">
+        </div>
+        <div class="pro-size">${s.size} <span class="pro-unit">${s.unit}</span></div>
+       `;
+        flexgrid.appendChild(feature);
+      }
     }, post);
+
+    await delay(10000);
 
     console.log(`Image: ${post.imgName}.png`);
 
