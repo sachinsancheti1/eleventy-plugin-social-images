@@ -4,8 +4,8 @@ const argv = require("yargs-parser")(process.argv.slice(2));
 const chromium = require("chrome-aws-lambda");
 const fs = require("fs");
 const path = require("path");
-const isWsl = require('is-wsl');
-const delay = require('delay');
+const isWsl = require("is-wsl");
+const delay = require("delay");
 
 const defaults = {
   siteName: "11ty Rocks!",
@@ -17,7 +17,7 @@ const defaults = {
   theme: "blue", // enum: 'blue' | 'green' | 'minimal' | 'sunset' | 'pop'
   width: 600,
   height: 315,
-  deviceScaleFactor: 2
+  deviceScaleFactor: 2,
 };
 
 const {
@@ -30,7 +30,7 @@ const {
   theme,
   width,
   height,
-  deviceScaleFactor
+  deviceScaleFactor,
 } = {
   ...defaults,
   ...argv,
@@ -54,15 +54,15 @@ const dataPath = fs.realpathSync(dataFile);
   console.log("Starting custom social images...");
 
   const browserArgs = {
-      args: chromium.args,
-      executablePath: await chromium.executablePath,
-      headless: chromium.headless,
-    }
+    args: chromium.args,
+    executablePath: await chromium.executablePath,
+    headless: chromium.headless,
+  };
 
   // WSL requires a different config
-  if(isWsl){
-    browserArgs.executablePath = "google-chrome"
-    browserArgs.headless = true
+  if (isWsl) {
+    browserArgs.executablePath = "google-chrome";
+    browserArgs.headless = true;
   }
 
   const browser = await chromium.puppeteer.launch(browserArgs);
@@ -127,23 +127,26 @@ const dataPath = fs.realpathSync(dataFile);
       title.innerHTML = post.title;
       const main = document.querySelector("main");
       main.style.backgroundImage = `url(${post.cover})`;
-      const flexgrid = document.querySelector(".flexgrid");
-      flexgrid.innerHTML="";
-      for (feat in post.bhkSpecs) {
-        var feature = document.createElement('div');
-        feature.classList.add("hfeature","nogrow");
-        const s = post.bhkSpecs[feat]
-        console.log();
-        s.unit = s.unit !== undefined ? s.unit : ''
-        s.size = s.size !== undefined ? s.size : ''
-        s.key = s.key !== undefined ? s.key : ''
-        feature.innerHTML = `
+      const element = document.querySelector(".flexgrid");
+      var flexgrid = element ? element.value : "";
+      if (flexgrid !== "") {
+        flexgrid.innerHTML = "";
+        for (feat in post.bhkSpecs) {
+          var feature = document.createElement("div");
+          feature.classList.add("hfeature", "nogrow");
+          const s = post.bhkSpecs[feat];
+          console.log();
+          s.unit = s.unit !== undefined ? s.unit : "";
+          s.size = s.size !== undefined ? s.size : "";
+          s.key = s.key !== undefined ? s.key : "";
+          feature.innerHTML = `
         <div class="circle pro-icon">
         <img alt="" src="${s.icon}" width="60px" height="60px">
         </div>
         <div class="pro-size">${s.size} <span class="pro-unit">${s.unit}</span></div>
        `;
-        flexgrid.appendChild(feature);
+          flexgrid.appendChild(feature);
+        }
       }
     }, post);
 
@@ -161,7 +164,7 @@ const dataPath = fs.realpathSync(dataFile);
 
   // close all pages, fix perm issues on windows 10 (https://github.com/puppeteer/puppeteer/issues/298)
   let browserPages = await browser.pages();
-  await Promise.all(browserPages.map(page =>page.close()));
+  await Promise.all(browserPages.map((page) => page.close()));
 
   await browser.close();
   console.log("Social images complete!");
