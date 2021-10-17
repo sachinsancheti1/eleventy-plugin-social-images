@@ -128,7 +128,7 @@ const dataPath = fs.realpathSync(dataFile);
       const main = document.querySelector("main");
       main.style.backgroundImage = `url(${post.cover})`;
       const element = document.querySelector(".flexgrid");
-      var flexgrid = element ? element.value : "";
+      var flexgrid = element ? element : "";
       if (flexgrid !== "") {
         flexgrid.innerHTML = "";
         for (feat in post.bhkSpecs) {
