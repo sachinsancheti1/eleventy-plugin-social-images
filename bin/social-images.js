@@ -65,7 +65,9 @@ const dataPath = fs.realpathSync(dataFile);
     browserArgs.headless = true;
   }
 
-  const browser = await chromium.puppeteer.launch(browserArgs);
+if (process.env.CONTEXT === 'production') {
+  console.log("Social Images being processed as this is the production branch");
+    const browser = await chromium.puppeteer.launch(browserArgs);
 
   const page = await browser.newPage();
 
@@ -167,5 +169,6 @@ const dataPath = fs.realpathSync(dataFile);
   await Promise.all(browserPages.map((page) => page.close()));
 
   await browser.close();
+}
   console.log("Social images complete!");
 })();
