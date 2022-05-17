@@ -1,6 +1,6 @@
 {
   "name": "@sachinsancheti1/eleventy-plugin-social-images",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Dynamically generated social media images for personal use. Forked from https://github.com/5t3ph/eleventy-plugin-social-images",
   "main": ".eleventy.js",
   "scripts": {
@@ -37,8 +37,8 @@
   "dependencies": {
     "chrome-aws-lambda": "^10.1.0",
     "is-wsl": "^2.2.0",
-    "puppeteer": "^13.0.0",
-    "puppeteer-core": "^13.0.0",
+    "puppeteer": "^10.1.0",
+    "puppeteer-core": "^10.1.0",
     "yargs-parser": "^21.0.0"
   }
 }
